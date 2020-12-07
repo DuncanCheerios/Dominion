@@ -1,4 +1,5 @@
 import deck as deck_mod
+from errors import EmptyDeckError
 
 class Player():
     """ Representation of a player """
@@ -12,11 +13,15 @@ class Player():
         
         self.draw_hand()
 
+        print(self.hand)
         # self.game = game
         self.prepare_turn()
 
     def take_turn(self):
         """ Placeholder take-turn logic """
+
+        print(self.hand)
+
         for card in self.hand:
             card.play(self)
 
@@ -47,17 +52,17 @@ class Player():
     def draw_hand(self):
         """draws hand of 5 cards from the deck"""
         for _ in range(5):
-            # Draw a card if possible
-            if (card := self.deck.draw_card()):
-                self.hand.add_card(card)
-            # if not, shuffle in the discard pile and try again
-            else:
+
+            try:
+                self.hand.add_card(self.deck.draw_card())
+            except EmptyDeckError:
+
+                # Try to shuffle back in discard
                 self.shuffle_in_discard()
-                # Try again to draw a card
-                if (card := self.deck.draw_card()):
-                    self.hand.add_card(card)
-                # if there are no cards in deck, then player has drawn all their cards
-                else:
+                try:
+                    self.hand.add_card(self.deck.draw_card())
+                # If the deck is still empty (an edgecase if player has very few cards), give up
+                except EmptyDeckError:
                     return
 
 
