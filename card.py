@@ -16,6 +16,15 @@ class Card(ABC):
     def __repr__(self):
         return self.name
 
+    def __eq__(self, other):
+        if isinstance(other, Card):
+            return other.name == self.name
+        return False
+
+    def __hash__(self):
+        return hash(self.name)
+
+
 class Coin(Card):
     """ Generic Coin-type Card""" 
 
@@ -31,6 +40,8 @@ class Coin(Card):
 
     def __str__(self):
         return super().__str__()
+
+
 
 class Copper(Coin):
     """ A Coin with value 1"""
